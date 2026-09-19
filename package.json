@@ -1,0 +1,17 @@
+{
+  "name": "psl-arena",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'Static app - no build step'"
+  },
+  "dependencies": {
+    "@netlify/blobs": "latest",
+    "@netlify/functions": "latest"
+  },
+  "devDependencies": {
+    "netlify-cli": "latest"
+  }
+}
