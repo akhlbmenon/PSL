@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0a0f1f" />
+  <title>PSL Arena</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div><div class="eyebrow">PLAYERS SQUAD LEAGUE</div><h1>PSL Arena</h1></div>
+    <div class="top-actions">
+      <select id="role"><option value="viewer">Viewer</option><option value="captain">Captain</option><option value="admin">Admin</option></select>
+      <select id="myTeam"><option value="">Select team</option></select>
+      <span id="saveState" class="status">● Live</span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="auction">🔨 Auction</button>
+    <button class="tab" data-tab="tournament">🎮 Tournament</button>
+    <button class="tab" data-tab="chat">🤖 AI Host & Chat</button>
+    <button class="tab admin-only" data-tab="admin">⚙️ Admin</button>
+  </nav>
+
+  <main>
+    <section id="auction" class="panel active">
+      <div class="grid hero-grid">
+        <article class="card auction-card">
+          <div class="row between"><div><div class="eyebrow">LIVE AUCTION</div><h2 id="auctionTitle">No player on the block</h2></div><div id="timer" class="timer">—</div></div>
+          <div id="currentPlayer" class="player-focus empty">Add players, then start an auction.</div>
+          <div id="highestBid" class="winning">No bids yet</div>
+          <div class="auction-actions">
+            <button id="readyBtn" class="secondary captain-only">Ready</button>
+            <input id="bidAmount" class="captain-only" type="number" min="1" placeholder="Bid" />
+            <button id="bidBtn" class="primary captain-only">Place Bid</button>
+            <button id="startBidBtn" class="primary admin-only">Start Bid</button>
+            <button id="stopBidBtn" class="danger admin-only">End Now</button>
+          </div>
+          <div id="readiness" class="chips"></div>
+        </article>
+
+        <article class="card"><div class="row between"><h3>Queue</h3><span id="queueCount" class="pill">0</span></div><div id="queue" class="list empty">No players queued.</div></article>
+      </div>
+
+      <div class="grid three">
+        <article class="card"><h3>Teams & squads</h3><div id="auctionTeams" class="list empty">No teams yet.</div></article>
+        <article class="card"><h3>Available players</h3><div id="availablePlayers" class="list empty">No players yet.</div></article>
+        <article class="card"><h3>Latest bids</h3><div id="bidHistory" class="list empty">No bids yet.</div></article>
+      </div>
+    </section>
+
+    <section id="tournament" class="panel">
+      <div class="row wrap between">
+        <div><div class="eyebrow">eFOOTBALL TOURNAMENT ORGANIZER</div><h2>Competition Centre</h2></div>
+        <div class="admin-only row wrap"><button id="importAuctionTeams" class="secondary">Import auction teams</button><label class="buttonlike">Import CSV<input id="csvInput" hidden type="file" accept=".csv,text/csv" /></label><button id="generateFixtures" class="primary">Generate fixtures</button><button id="generateKO" class="secondary">Add knockout phase</button></div>
+      </div>
+
+      <div class="stats"><div><b id="statTeams">0</b><span>Teams</span></div><div><b id="statPlayed">0</b><span>Matches played</span></div><div><b id="statGoals">0</b><span>Goals</span></div><div><b id="statMatchday">0</b><span>Matchdays</span></div></div>
+
+      <div class="grid two">
+        <article class="card"><div class="row between"><h3>Points table</h3><span class="muted">Auto-updated</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody id="pointsBody"></tbody></table></div></article>
+        <article class="card"><div class="row between"><h3>Fixtures & scores</h3><select id="matchdayFilter"><option value="all">All matchdays</option></select></div><div id="fixtures" class="list empty">Generate fixtures to begin.</div><button id="shareMatchday" class="secondary wide">📤 Copy selected matchday</button></article>
+      </div>
+
+      <div class="grid three">
+        <article class="card"><h3>⚽ Top scorers</h3><div id="scorers" class="list empty">No goals recorded.</div></article>
+        <article class="card"><h3>🧤 Clean sheets</h3><div id="cleanSheets" class="list empty">No clean sheets recorded.</div></article>
+        <article class="card"><h3>🏆 Knockout phase</h3><div id="knockout" class="list empty">No knockout phase yet.</div></article>
+      </div>
+    </section>
+
+    <section id="chat" class="panel">
+      <div class="chat-shell card">
+        <div class="chat-head"><div><h2>🤖 PSL Arena AI Host</h2><p>The bot hosts auction events, moderates the room and answers normal auction/tournament questions.</p></div></div>
+        <div id="chatMessages" class="messages"></div>
+        <div id="quickTexts" class="quick admin-only"></div>
+        <form id="chatForm" class="chat-compose"><input id="chatInput" maxlength="500" placeholder="Ask PSL Arena AI Host…" /><button class="primary">Send</button></form>
+      </div>
+    </section>
+
+    <section id="admin" class="panel admin-only">
+      <div class="grid two">
+        <article class="card"><h2>Auction setup</h2><div class="form-grid"><input id="teamName" placeholder="Team name" /><input id="captainName" placeholder="Captain" /><input id="teamBudget" type="number" value="200" placeholder="Budget" /><input id="teamImage" placeholder="Badge/image URL" /><button id="addTeam" class="primary">Add team</button></div><hr/><div class="form-grid"><input id="playerName" placeholder="Player name" /><input id="playerBase" type="number" value="1" placeholder="Base price" /><input id="playerRating" type="number" placeholder="Division rating" /><button id="addPlayer" class="primary">Add player</button></div></article>
+        <article class="card"><h2>Automation & tournament rules</h2><label>Bid timer (seconds)<input id="timerSetting" type="number" min="5" value="30" /></label><label class="check"><input id="autoAuction" type="checkbox" /> Automated auction</label><label>Delay before next player<input id="autoDelay" type="number" min="1" value="10" /></label><label>League meetings per pair<input id="meetings" type="number" min="1" max="10" value="1" /></label><button id="saveSettings" class="primary">Save settings</button></article>
+      </div>
+      <article class="card danger-zone"><h2>Danger zone</h2><p>Clear every team, player, bid, chat message, fixture, result and tournament record. The app contains no default demo data after reset.</p><button id="resetAll" class="danger">Reset & clear all data</button></article>
+    </section>
+  </main>
+
+  <dialog id="readyDialog"><h3>⚠️ Not everyone is ready</h3><p id="readyWarning"></p><div class="row end"><button id="cancelStart" class="secondary">Cancel</button><button id="overrideStart" class="danger">Override & start</button></div></dialog>
+  <dialog id="scoreDialog"><h3>Update result</h3><div id="scoreMatch"></div><div class="score-row"><input id="homeScore" type="number" min="0" value="0" /><b>–</b><input id="awayScore" type="number" min="0" value="0" /></div><textarea id="goalScorers" placeholder="Goal scorers, one per line. Example: Neymar, Team A"></textarea><div class="row end"><button id="scoreCancel" class="secondary">Cancel</button><button id="scoreSave" class="primary">Save result</button></div></dialog>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
